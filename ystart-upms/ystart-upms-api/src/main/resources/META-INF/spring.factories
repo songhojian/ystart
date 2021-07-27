@@ -1,0 +1,8 @@
+# 配置 feignclient 的全类名路径， 避免包名不规范无法扫描问题
+tech.yiren.ystart.common.feign.YstartFeignAutoConfiguration=\
+  tech.yiren.ystart.admin.api.feign.RemoteDataScopeService,\
+  tech.yiren.ystart.admin.api.feign.RemoteLogService,\
+  tech.yiren.ystart.admin.api.feign.RemoteParamService,\
+  tech.yiren.ystart.admin.api.feign.RemoteTenantService,\
+  tech.yiren.ystart.admin.api.feign.RemoteTokenService,\
+  tech.yiren.ystart.admin.api.feign.RemoteUserService

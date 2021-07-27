@@ -1,0 +1,9 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  tech.yiren.ystart.common.security.component.YstartTokenEnhancer,\
+  tech.yiren.ystart.common.security.component.YstartSecurityInnerAspect,\
+  tech.yiren.ystart.common.security.service.YstartUserDetailsServiceImpl,\
+  tech.yiren.ystart.common.security.serializer.YstartTokenStoreAutoConfiguration,\
+  tech.yiren.ystart.common.security.listener.AuthenticationFailureEventListener,\
+  tech.yiren.ystart.common.security.listener.AuthenticationSuccessEventListener,\
+  tech.yiren.ystart.common.security.listener.AuthenticationLogoutSuccessEventListener
+

@@ -1,0 +1,162 @@
+# 使用说明 V4.0.0
+# 1. 使用docker-compose  宿主机不需要配置host来发现
+# 2. 无需修改源码，根目录  docker-compose up 即可
+# 3. 静静等待服务启动
+
+version: '2'
+services:
+  ystart-mysql:
+    build:
+      context: ./db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    restart: always
+    container_name: ystart-mysql
+    image: ystart-mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ./ystart-mysql:/var/lib/mysql
+    command: --lower_case_table_names=1
+
+  ystart-redis:
+    container_name: ystart-redis
+    image: redis:5.0.7
+    restart: always
+    ports:
+      - 6379:6379
+
+  ystart-minio:
+    container_name: ystart-minio
+    image: minio/minio
+    command: server /data
+    ports:
+      - 9000:9000
+    volumes:
+      - ./data:/data
+      - ./config:/root/.minio
+    environment:
+      - MINIO_DOMAIN=ystart-minio
+      - MINIO_ACCESS_KEY=ystart
+      - MINIO_SECRET_KEY=ystart
+
+  ystart-register:
+    build:
+      context: ./ystart-register
+    restart: always
+    container_name: ystart-register
+    image: ystart-register
+    ports:
+      - 8848:8848
+
+  ystart-gateway:
+    build:
+      context: ./ystart-gateway
+    restart: always
+    container_name: ystart-gateway
+    image: ystart-gateway
+    ports:
+      - 9999:9999
+
+  ystart-auth:
+    build:
+      context: ./ystart-auth
+    restart: always
+    container_name: ystart-auth
+    image: ystart-auth
+
+  ystart-upms:
+    build:
+      context: ./ystart-upms/ystart-upms-biz
+    restart: always
+    container_name: ystart-upms
+    image: ystart-upms
+
+  ystart-monitor:
+    build:
+      context: ./ystart-visual/ystart-monitor
+    restart: always
+    image: ystart-monitor
+    container_name: ystart-monitor
+    ports:
+      - 5001:5001
+
+  ystart-daemon-quartz:
+    build:
+      context: ./ystart-visual/ystart-daemon-quartz
+    restart: always
+    image: ystart-daemon-quartz
+    container_name: ystart-daemon-quartz
+
+  ystart-daemon-elastic-job:
+    build:
+      context: ./ystart-visual/ystart-daemon-elastic-job
+    restart: always
+    image: ystart-daemon-elastic-job
+    container_name: ystart-daemon-elastic-job
+
+  ystart-codegen:
+    build:
+      context: ./ystart-visual/ystart-codegen
+    restart: always
+    image: ystart-codegen
+    container_name: ystart-codegen
+
+  ystart-mp-platform:
+    build:
+      context: ./ystart-visual/ystart-mp-platform
+    restart: always
+    image: ystart-mp-platform
+    container_name: ystart-mp-platform
+
+  ystart-pay-platform:
+    build:
+      context: ./ystart-visual/ystart-pay-platform
+    restart: always
+    image: ystart-pay-platform
+    container_name: ystart-pay-platform
+
+  ystart-oa-platform:
+    build:
+      context: ./ystart-visual/ystart-oa-platform
+    restart: always
+    image: ystart-oa-platform
+    container_name: ystart-oa-platform
+
+  ystart-bi-platform:
+    build:
+      context: ./ystart-visual/ystart-bi-platform
+    restart: always
+    image: ystart-bi-platform
+    container_name: ystart-bi-platform
+    ports:
+      - 5006:5006
+
+  ystartx-job:
+    build:
+      context: ./ystart-visual/ystart-xxl-job-admin
+    restart: always
+    container_name: ystart-job
+    hostname: ystart-job
+    image: ystart-job
+    ports:
+      - 9080:9080
+
+  ystart-tx-manager:
+    build:
+      context: ./ystart-visual/ystart-tx-manager
+    restart: always
+    image: ystart-tx-manager
+    container_name: ystart-tx-manager
+    ports:
+      - 5004:5004
+      - 9998:9998
+
+  ystart-sentinel:
+    build:
+      context: ./ystart-visual/ystart-sentinel-dashboard
+    restart: always
+    image: ystart-sentinel
+    container_name: ystart-sentinel
+    ports:
+      - 5020:5020

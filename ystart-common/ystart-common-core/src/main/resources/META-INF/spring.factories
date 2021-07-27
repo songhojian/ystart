@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  tech.yiren.ystart.common.core.config.JacksonConfig,\
+  tech.yiren.ystart.common.core.config.MessageSourceConfig,\
+  tech.yiren.ystart.common.core.config.RestTemplateConfig,\
+  tech.yiren.ystart.common.core.util.SpringContextHolder

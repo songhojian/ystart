@@ -1,0 +1,9 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+    tech.yiren.ystart.common.data.cache.RedisTemplateConfig,\
+    tech.yiren.ystart.common.data.cache.RedisCacheManagerConfig,\
+    tech.yiren.ystart.common.data.cache.RedisCacheAutoConfiguration,\
+    tech.yiren.ystart.common.data.tenant.YstartTenantConfigProperties,\
+    tech.yiren.ystart.common.data.tenant.TenantContextHolderFilter,\
+    tech.yiren.ystart.common.data.tenant.YstartTenantConfiguration,\
+    tech.yiren.ystart.common.data.mybatis.MybatisPlusConfiguration,\
+    tech.yiren.ystart.common.data.resolver.TenantKeyStrResolver

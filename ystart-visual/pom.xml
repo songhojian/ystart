@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~
+  ~      Copyright (c) 2018-2025, ystart All rights reserved.
+  ~
+  ~  Redistribution and use in source and binary forms, with or without
+  ~  modification, are permitted provided that the following conditions are met:
+  ~
+  ~ Redistributions of source code must retain the above copyright notice,
+  ~  this list of conditions and the following disclaimer.
+  ~  Redistributions in binary form must reproduce the above copyright
+  ~  notice, this list of conditions and the following disclaimer in the
+  ~  documentation and/or other materials provided with the distribution.
+  ~  Neither the name of the pig4cloud.com developer nor the names of its
+  ~  contributors may be used to endorse or promote products derived from
+  ~  this software without specific prior written permission.
+  ~  Author: ystart
+  ~
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>tech.yiren</groupId>
+		<artifactId>ystart</artifactId>
+		<version>4.1.0</version>
+	</parent>
+
+	<artifactId>ystart-visual</artifactId>
+	<description>ystart 图形化功能模块</description>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>ystart-bi-platform</module>
+		<module>ystart-codegen</module>
+		<module>ystart-lowcode</module>
+		<module>ystart-daemon-elastic-job</module>
+		<module>ystart-daemon-quartz</module>
+		<module>ystart-oa-platform</module>
+		<module>ystart-pay-platform</module>
+		<module>ystart-monitor</module>
+		<module>ystart-mp-platform</module>
+		<module>ystart-sso-client-demo</module>
+		<module>ystart-sentinel-dashboard</module>
+		<module>ystart-tx-manager</module>
+		<module>ystart-xxl-job-admin</module>
+	</modules>
+</project>

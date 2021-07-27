@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>tech.yiren</groupId>
+		<artifactId>ystart-visual</artifactId>
+		<version>4.1.0</version>
+	</parent>
+
+	<artifactId>ystart-lowcode</artifactId>
+	<packaging>jar</packaging>
+
+	<description>代码生成模块</description>
+
+	<properties>
+		<sqlserver.version>4.0</sqlserver.version>
+		<db2.version>11.5.0.0</db2.version>
+		<oracle.version>12.1.0.1-atlassian-hosted</oracle.version>
+		<configuration.version>1.10</configuration.version>
+	</properties>
+
+	<dependencies>
+		<!--注册中心客户端-->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+		</dependency>
+		<!--配置中心客户端-->
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+		</dependency>
+		<!--数据操作-->
+		<dependency>
+			<groupId>tech.yiren</groupId>
+			<artifactId>ystart-common-data</artifactId>
+		</dependency>
+		<!--动态数据源 数据操作-->
+		<dependency>
+			<groupId>tech.yiren</groupId>
+			<artifactId>ystart-common-datasource</artifactId>
+		</dependency>
+		<!--mybatis-->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<!-- postgresql 驱动 -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+		<!-- oracle 驱动 -->
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>${oracle.version}</version>
+		</dependency>
+		<!-- sqlserver 驱动 -->
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>sqljdbc4</artifactId>
+			<version>${sqlserver.version}</version>
+		</dependency>
+		<!-- db2 驱动-->
+		<dependency>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>jcc</artifactId>
+			<version>${db2.version}</version>
+		</dependency>
+		<!-- druid 连接池 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+		</dependency>
+		<!--common-->
+		<dependency>
+			<groupId>tech.yiren</groupId>
+			<artifactId>ystart-common-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>${configuration.version}</version>
+		</dependency>
+		<!--swagger-->
+		<dependency>
+			<groupId>tech.yiren</groupId>
+			<artifactId>ystart-common-swagger</artifactId>
+		</dependency>
+		<!--安全模块-->
+		<dependency>
+			<groupId>tech.yiren</groupId>
+			<artifactId>ystart-common-xss</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>tech.yiren</groupId>
+			<artifactId>ystart-common-security</artifactId>
+		</dependency>
+		<!--sentinel-->
+		<dependency>
+			<groupId>tech.yiren</groupId>
+			<artifactId>ystart-common-sentinel</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>tech.yiren</groupId>
+			<artifactId>ystart-common-log</artifactId>
+		</dependency>
+		<!--灰度支持-->
+		<dependency>
+			<groupId>tech.yiren</groupId>
+			<artifactId>ystart-common-gray</artifactId>
+		</dependency>
+
+		<!--web 模块-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!--undertow容器-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-undertow</artifactId>
+		</dependency>
+
+		<!--redis-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+        <dependency>
+            <groupId>tech.yiren</groupId>
+            <artifactId>ystart-common-oss</artifactId>
+        </dependency>
+
+    </dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>
