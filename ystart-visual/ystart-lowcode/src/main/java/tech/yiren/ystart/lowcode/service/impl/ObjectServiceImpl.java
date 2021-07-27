@@ -173,7 +173,7 @@ public class ObjectServiceImpl implements ObjectService {
 
         relativeField.put("label", relative.getFieldName());
         relativeField.put("prop", relative.getFieldCode());
-        relativeField.put("hide", false);
+        relativeField.put("hide", true);
         relativeField.put("order", 0);
 
         if (null != relative.getHelpTip()) {
@@ -189,7 +189,7 @@ public class ObjectServiceImpl implements ObjectService {
         switch (relative.getFieldType()) {
             case "input":
                 relativeField.put("type", "input");
-                relativeField.put("search", true);
+                relativeField.put("search", false);
                 relativeField.put("showWordLimit", true);
                 if (null != relative.getMaxLength()) {
                     relativeField.put("maxlength", relative.getMaxLength());
@@ -200,7 +200,7 @@ public class ObjectServiceImpl implements ObjectService {
                 break;
             case "boolean":
                 relativeField.put("type", "radio");
-                relativeField.put("search", true);
+                relativeField.put("search", false);
                 List<HashMap> booleanDict = new ArrayList<>();
 
                 HashMap<String, Object> yes = new HashMap<>();
@@ -219,7 +219,7 @@ public class ObjectServiceImpl implements ObjectService {
                 }
                 break;
             case "textarea":
-                relativeField.put("search", true);
+                relativeField.put("search", false);
                 relativeField.put("span", 24);
                 relativeField.put("showWordLimit", true);
                 relativeField.put("type", "textarea");
@@ -262,7 +262,7 @@ public class ObjectServiceImpl implements ObjectService {
                     relativeField.put("precision", relative.getPrecision());
                 }
             case "switch":
-                relativeField.put("search", true);
+                relativeField.put("search", false);
                 relativeField.put("type", "switch");
 
             case "input-number-money":
@@ -319,7 +319,7 @@ public class ObjectServiceImpl implements ObjectService {
                     dictProps.put("value", "_id");
                     relativeField.put("props", dictProps);
                 }
-                relativeField.put("search", true);
+                relativeField.put("search", false);
                 if (null != relative.getSelectStyle()) {
                     relativeField.put("type", relative.getSelectStyle());
                 } else {
