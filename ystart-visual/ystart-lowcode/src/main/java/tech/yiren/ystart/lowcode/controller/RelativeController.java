@@ -66,9 +66,9 @@ public class RelativeController {
     }
 
     @ApiOperation(value = "通过code查询", notes = "通过code查询")
-    @GetMapping("/getByCode/{code}")
-    public R getByCode(@PathVariable("code") String code) {
-        return R.ok(relativeService.getByCode(code));
+    @GetMapping("/getByCode/{relative}/{code}")
+    public R getByCode(@PathVariable("code") String code,@PathVariable("code") String relative) {
+        return R.ok(relativeService.getByCode(code,relative));
     }
 
 

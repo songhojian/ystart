@@ -18,7 +18,7 @@ public interface RelativeService<T> {
 
     T getById(String id);
 
-    T getByCode(String code);
+    T getByCode(String code,String relative);
 
     T insert(Relative object);
 

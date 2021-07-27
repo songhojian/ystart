@@ -73,7 +73,7 @@ public class ObjectServiceImpl implements ObjectService {
 
     @Override
     public List listFeilds(String _id) {
-        Criteria criteria = Criteria.where("modelId").is(_id);
+        Criteria criteria = Criteria.where("modelCode").is(_id);
         // 创建查询对象，然后将条件对象添加到其中
         Query query = new Query(criteria);
         return mongoTemplate.find(query, Relative.class, COLLECTION_RELATIVE_NAME);

@@ -70,8 +70,8 @@ public class RelativeServiceImpl implements RelativeService {
     }
 
     @Override
-    public Object getByCode(String code) {
-        Criteria criteria = Criteria.where("fieldCode").is(code);
+    public Object getByCode(String code,String relative) {
+        Criteria criteria = Criteria.where("fieldCode").is(code).and("modelId").is(relative);
         // 创建查询对象，然后将条件对象添加到其中
         Query query = new Query(criteria);
         Relative object = mongoTemplate.findOne(query, Relative.class, COLLECTION_NAME);
