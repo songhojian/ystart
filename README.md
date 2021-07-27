@@ -1,7 +1,8 @@
 ## 项目介绍
 - 以人科技低代码项目
 
-### 项目配置
+### 配置host
+```
 127.0.0.1 ystart-register
 127.0.0.1 ystart-gateway
 127.0.0.1 ystart-redis
@@ -9,6 +10,8 @@
 103.229.214.106  ystart-mongo
 127.0.0.1 ystart-sentinel
 127.0.0.1 ystart-monitor
+```
+
 
 ### 项目启动步骤
 - 清空redis: redis-cli 进入命令行，然后清空 flushall
