@@ -44,7 +44,7 @@ public class CommonServiceImpl implements CommonService {
             	String condition = (String) k;
             	if(condition.startsWith("$=:")){
 					condition = condition.substring(3);
-					query.addCriteria(Criteria.where(condition).is(v));
+					query.addCriteria(Criteria.where(condition).is(v));// bug to fix
 				}else if(condition.startsWith("$≠:")){
 					condition = condition.substring(3);
 					query.addCriteria(Criteria.where(condition).ne(v));
