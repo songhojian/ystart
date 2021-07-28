@@ -41,7 +41,34 @@ public class CommonServiceImpl implements CommonService {
         Query query = new Query();
         if (null != pageDto.getFilter() && pageDto.getFilter().size() > 0) {
             pageDto.getFilter().forEach((k, v) -> {
-                query.addCriteria(Criteria.where((String) k).is(v));
+            	String condition = (String) k;
+            	if(condition.startsWith("$=:")){
+					condition = condition.substring(3);
+					query.addCriteria(Criteria.where(condition).is(v));
+				}else if(condition.startsWith("$≠:")){
+					condition = condition.substring(3);
+					query.addCriteria(Criteria.where(condition).ne(v));
+				}else if(condition.startsWith("$>:")){
+					condition = condition.substring(3);
+					query.addCriteria(Criteria.where(condition).gt(v));
+				}else if(condition.startsWith("$<:")){
+					condition = condition.substring(3);
+					query.addCriteria(Criteria.where(condition).lt(v));
+				}else if(condition.startsWith("$>=:")){
+					condition = condition.substring(4);
+					query.addCriteria(Criteria.where(condition).gte(v));
+				}else if(condition.startsWith("$<=:")){
+					condition = condition.substring(4);
+					query.addCriteria(Criteria.where(condition).lte(v));
+				}else if(condition.startsWith("$like:")){
+					condition = condition.substring(6);
+					query.addCriteria(Criteria.where(condition).regex("^.*"+v+".*$"));
+				}else if(condition.startsWith("$∈:")){
+					condition = condition.substring(3);
+					query.addCriteria(Criteria.where(condition).in(v));
+				}else{
+					query.addCriteria(Criteria.where(condition).is(v));
+				}
             });
         }
         IPage iPage = new Page();

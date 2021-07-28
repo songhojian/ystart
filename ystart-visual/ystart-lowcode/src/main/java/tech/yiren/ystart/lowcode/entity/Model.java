@@ -29,6 +29,7 @@ public class Model {
     public Object showColumn;
     public Object sortColumn;
     public Object searchColumn;
+    public Object viewConfig;
     public Object searchSuperColumn;
     public String rel1;
     public String rel2;

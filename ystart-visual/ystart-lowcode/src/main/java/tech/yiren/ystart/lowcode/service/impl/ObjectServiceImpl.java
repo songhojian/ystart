@@ -137,8 +137,9 @@ public class ObjectServiceImpl implements ObjectService {
 
                 HashMap hashMap = this.conventViewJson(relativeTmp);
                 hashMap.remove("search");
-                if (relative.getFieldCode().equals(relativeTmp.getFieldCode())) {
+                if (code.equals(relativeTmp.getRelObj())) {
                     hashMap.put("hide", true); // 隐藏列
+                    hashMap.put("display", false); // 隐藏列
                 }
                 relativColumnMasters.add(hashMap);
             }
@@ -173,7 +174,7 @@ public class ObjectServiceImpl implements ObjectService {
 
         relativeField.put("label", relative.getFieldName());
         relativeField.put("prop", relative.getFieldCode());
-        relativeField.put("hide", true);
+        relativeField.put("hide", false);
         relativeField.put("order", 0);
 
         if (null != relative.getHelpTip()) {
@@ -391,6 +392,8 @@ public class ObjectServiceImpl implements ObjectService {
                 propsHttpA.put("res", "data");
                 relativeField.put("propsHttp", propsHttpA);
                 relativeField.put("span", 24);
+				relativeField.put("slot", true);
+				relativeField.put("formslot", true);
                 break;
             case "field-reference": // 字段引用
                 relativeField.put("type", "table");
@@ -401,11 +404,10 @@ public class ObjectServiceImpl implements ObjectService {
 //                relativeField.put("formatter", "eval(\"(row) => {if (!row.name){return ''}return row.name + '-' + row.sex}\")");
                 break;
             case "master-slave":
-                relativeField.put("slot", true);
+//                relativeField.put("slot", true);
                 break;
         }
-        relativeField.put("slot", true);
-        relativeField.put("formslot", true);
+
         relativeField.put("rules", rules);
         return relativeField;
     }
