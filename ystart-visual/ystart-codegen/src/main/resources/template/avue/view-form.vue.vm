@@ -1,0 +1,62 @@
+<template>
+    <el-dialog :title="title" :visible.sync="visible" :fullscreen.sync="fullscreen">
+        <span slot="title" class="el-dialog__title">
+          {{title}}
+          <i class="el-icon-full-screen el-dialog__headerbtn" @click="toggleFullscreen" style="margin-top: 2px; margin-right: 30px"></i>
+        </span>
+        <avue-form
+            v-if="visible"
+            ref="avueForm"
+            v-model="model"
+            :option="viewOption"
+        >
+        </avue-form>
+    </el-dialog>
+</template>
+
+<script>
+    export default {
+        name: '${pathName}ViewForm',
+        props: {},
+        data() {
+            return {
+                fullscreen: false,
+                title: '查看',
+                visible: false,
+                viewOption: {},
+                model: {}
+            }
+        },
+        computed: {
+        },
+        created () {
+            console.log('${pathName}ViewForm created')
+        },
+        methods: {
+            toggleFullscreen() {
+                this.fullscreen = !this.fullscreen
+            },
+            init (viewOption,row,ind) {
+                this.visible = true
+                this.viewOption = viewOption
+                this.model = Object.assign({},row)
+                console.log('viewOption-->',viewOption,row,ind)
+            },
+            emptytFormData () {
+                this.$refs.avueForm.resetForm();
+            }
+        }
+    }
+</script>
+<style lang="scss" scoped>
+    .el-input-number__decrease {
+        display: none;
+    }
+    .el-input-number__increase{
+        display: none;
+    }
+    .viewError{
+        background-color: #409eff;
+        color: #fff;
+    }
+</style>

@@ -1,0 +1,72 @@
+<template>
+    <el-dialog :title="title" :visible.sync="visible" :fullscreen.sync="fullscreen">
+        <span slot="title" class="el-dialog__title">
+          {{title}}
+          <i class="el-icon-full-screen el-dialog__headerbtn" @click="toggleFullscreen" style="margin-top: 2px; margin-right: 30px"></i>
+        </span>
+        <avue-form
+            v-if="visible"
+            ref="avueForm"
+            v-model="model"
+            :option="editOption"
+            @submit="dataFormSubmit"
+        >
+        </avue-form>
+    </el-dialog>
+</template>
+
+<script>
+    import { putObj } from '@/api/${pathName}'
+    import { mapGetters } from "vuex";
+
+    export default {
+        name: '${pathName}EditForm',
+        props: {},
+        data() {
+            return {
+                fullscreen: false,
+                title: '编辑',
+                visible: false,
+                editOption: {},
+                model: {}
+            }
+        },
+        computed: {
+            ...mapGetters(['userInfo']),
+        },
+        created () {
+            console.log('${pathName}EditForm created')
+        },
+        methods: {
+            toggleFullscreen() {
+                this.fullscreen = !this.fullscreen
+            },
+            init (editOption,row,ind) {
+                this.visible = true
+                this.editOption = editOption
+                this.model = Object.assign({},row)
+                console.log('editOption-->',editOption,row,ind)
+            },
+            emptytFormData () {
+                this.$refs.avueForm.resetForm();
+            },
+            async dataFormSubmit (form, done) {
+                this.$message.info('正在提交');
+                console.log('form->', JSON.stringify(form));
+                this.model.createUserName = this.userInfo.username;
+                this.model.createUserId = this.userInfo.userId;
+                const { resData, code, message } = await putObj(form['id'], this.model);
+                if (code == 0) {
+                    done();
+                    this.visible = false
+                    this.$emit("saveSucess", resData);
+                } else {
+                    done();
+                    this.$message.error(message);
+                }
+            }
+        }
+    }
+</script>
+<style lang="scss" scoped>
+</style>

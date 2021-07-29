@@ -21,12 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -34,14 +29,15 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import tech.yiren.ystart.codegen.entity.ColumnEntity;
-import tech.yiren.ystart.codegen.entity.GenConfig;
-import tech.yiren.ystart.codegen.entity.GenDatasourceConf;
-import tech.yiren.ystart.codegen.entity.GenFormConf;
-import tech.yiren.ystart.codegen.entity.TableEntity;
+import net.bytebuddy.implementation.FieldAccessor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+import tech.yiren.ystart.codegen.entity.*;
 import tech.yiren.ystart.codegen.mapper.GenDatasourceConfMapper;
 import tech.yiren.ystart.codegen.mapper.GeneratorMapper;
+import tech.yiren.ystart.common.core.constant.CacheConstants;
 import tech.yiren.ystart.common.core.constant.CommonConstants;
 import tech.yiren.ystart.common.core.constant.enums.StyleTypeEnum;
 import tech.yiren.ystart.common.core.exception.CheckedException;
@@ -60,6 +56,12 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.springframework.context.ApplicationContext;
 
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+
+import javax.annotation.Resource;
+
 /**
  * 代码生成器 工具类
  *
@@ -69,6 +71,15 @@ import org.springframework.context.ApplicationContext;
 @Slf4j
 @UtilityClass
 public class GenUtils {
+
+
+
+	/**
+	 * 设置集合名称
+	 */
+	private static final String COLLECTION_NAME = "model";
+	private static final String COLLECTION_RELATIVE_NAME = "relative";
+	private static final String COLLECTION_MAINDATA_NAME = "mainData";
 
 	public final String CRUD_PREFIX = "export const tableOption =";
 
@@ -87,6 +98,12 @@ public class GenUtils {
 	private final String MENU_SQL_VM = "menu.sql.vm";
 
 	private final String AVUE_INDEX_VUE_VM = "avue/index.vue.vm";
+
+	private final String AVUE_ADD_VUE_VM = "avue/add-form.vue.vm";
+
+	private final String AVUE_EDIT_VUE_VM = "avue/edit-form.vue.vm";
+
+	private final String AVUE_VIEW_VUE_VM = "avue/view-form.vue.vm";
 
 	private final String ELE_INDEX_VUE_VM = "element/index.vue.vm";
 
@@ -118,19 +135,21 @@ public class GenUtils {
 		}
 		else {
 			templates.add("template/avue/index.vue.vm");
+			templates.add("template/avue/add-form.vue.vm");
+			templates.add("template/avue/edit-form.vue.vm");
+			templates.add("template/avue/view-form.vue.vm");
 			templates.add("template/avue/crud.js.vm");
 		}
 
 		return templates;
 	}
-
 	/**
 	 * 生成代码
 	 * @return
 	 */
 	@SneakyThrows
 	public Map<String, String> generatorCode(GenConfig genConfig, Map<String, String> table,
-			List<Map<String, String>> columns, ZipOutputStream zip, GenFormConf formConf) {
+			List<Map<String, String>> columns, ZipOutputStream zip, GenFormConf formConf, Model model) {
 		// 配置信息
 		Configuration config = getConfig();
 		boolean hasBigDecimal = false;
@@ -221,6 +240,25 @@ public class GenUtils {
 		map.put("classname", tableEntity.getLowerClassName());
 		map.put("pathName", tableEntity.getLowerClassName().toLowerCase());
 		map.put("columns", tableEntity.getColumns());
+
+		Object listOption  = model.getListOption();
+		map.put("columnList", JSON.toJSON(listOption));
+		Object addOption = model.getAddOption();
+		if(null == addOption){
+			addOption = listOption;
+		}
+		Object editOption = model.getEditOption();
+		if(null == editOption){
+			editOption = addOption;
+		}
+		Object viewOption = model.getViewOption();
+		if(null == viewOption){
+			viewOption = addOption;
+		}
+		map.put("columnAdd",JSON.toJSON(addOption) );
+		map.put("columnEdit", JSON.toJSON(editOption));
+		map.put("columnView", JSON.toJSON(viewOption));
+
 		map.put("hasBigDecimal", hasBigDecimal);
 		map.put("datetime", DateUtil.now());
 
@@ -393,6 +431,25 @@ public class GenUtils {
 					+ File.separator + moduleName + File.separator + className.toLowerCase() + File.separator
 					+ "index.vue";
 		}
+
+		if (template.contains(AVUE_ADD_VUE_VM) || template.contains(ELE_INDEX_VUE_VM)) {
+			return CommonConstants.FRONT_END_PROJECT + File.separator + "src" + File.separator + "views"
+					+ File.separator + moduleName + File.separator + className.toLowerCase() + File.separator
+					+ "add-form.vue";
+		}
+
+		if (template.contains(AVUE_EDIT_VUE_VM) || template.contains(ELE_INDEX_VUE_VM)) {
+			return CommonConstants.FRONT_END_PROJECT + File.separator + "src" + File.separator + "views"
+					+ File.separator + moduleName + File.separator + className.toLowerCase() + File.separator
+					+ "edit-form.vue";
+		}
+
+		if (template.contains(AVUE_VIEW_VUE_VM) || template.contains(ELE_INDEX_VUE_VM)) {
+			return CommonConstants.FRONT_END_PROJECT + File.separator + "src" + File.separator + "views"
+					+ File.separator + moduleName + File.separator + className.toLowerCase() + File.separator
+					+ "view-form.vue";
+		}
+
 
 		if (template.contains(AVUE_API_JS_VM)) {
 			return CommonConstants.FRONT_END_PROJECT + File.separator + "src" + File.separator + "api" + File.separator

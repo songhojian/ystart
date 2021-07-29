@@ -17,43 +17,89 @@
 <template>
     <div class="execution">
         <basic-container>
-            <avue-crud ref="crud"
-                       :page.sync="page"
-                       :data="tableData"
-                       :permission="permissionList"
-                       :table-loading="tableLoading"
-                       :option="tableOption"
-                       @on-load="getList"
-                       @search-change="searchChange"
-                       @refresh-change="refreshChange"
-                       @size-change="sizeChange"
-                       @current-change="currentChange"
-                       @row-update="handleUpdate"
-                       @row-save="handleSave"
-                       @row-del="rowDel">
+            <avue-crud
+                v-bind="bindVal"
+                v-on="onEvent"
+                v-model="form"
+                :page.sync="page"
+            >
+                <template slot="menuLeft">
+                    <el-button
+                        type="primary"
+                        icon="el-icon-plus"
+                        size="small"
+                        @click.stop="addRow()">
+                        新 增
+                    </el-button>
+                </template>
+                <template slot-scope="{ row, index }" slot="menu">
+                    <el-button
+                        type="text"
+                        icon="el-icon-edit"
+                        size="small"
+                        text
+                        @click.stop="editRow(row, index)">
+                        编辑
+                    </el-button>
+                    <el-button
+                        type="text"
+                        icon="el-icon-view"
+                        size="small"
+                        text
+                        @click.stop="viewRow(row, index)">
+                        查看
+                    </el-button>
+                </template>
             </avue-crud>
+            <add-form ref="addRef" v-if="addVisible" @saveSucess="getList"></add-form>
+            <edit-form
+                    ref="editRef"
+                    @saveSucess="getList"
+                    v-if="editVisible"
+            ></edit-form>
+            <view-form ref="viewRef" v-if="viewVisible"></view-form>
         </basic-container>
     </div>
 </template>
 
 <script>
-    import {fetchList, getObj, addObj, putObj, delObj} from '@/api/${pathName}'
-    import {tableOption} from '@/const/crud/${pathName}'
+    import {page, list, getObj, addObj, putObj, delObj} from '@/api/${pathName}'
+    import {tableOption, addOption, editOption, viewOption} from '@/const/crud/${pathName}'
     import {mapGetters} from 'vuex'
+    import addForm from './add-form.vue'
+    import editForm from './edit-form.vue'
+    import viewForm from './view-form.vue'
 
     export default {
         name: '${pathName}',
+        components: {
+            addForm,
+            editForm,
+            viewForm
+        },
         data() {
             return {
-                searchForm: {},
-                tableData: [],
+                loadDataEnd: false,
+                viewConfig: [],
+                activeTab: '0',
+                addVisible: false,
+                editVisible: false,
+                viewVisible: false,
+                data: [],
+                filterParams: {},
+                form: {},
+                params: {},
                 page: {
                     total: 0, // 总页数
                     currentPage: 1, // 当前页数
                     pageSize: 20 // 每页显示多少条
                 },
-                tableLoading: false,
-                tableOption: tableOption
+                model: '',
+                loading: true,
+                option: tableOption,
+                addOption: addOption,
+                editOption: editOption,
+                viewOption: viewOption
             }
         },
         computed: {
@@ -64,20 +110,63 @@
                     delBtn: this.vaildData(this.permissions.${moduleName}_${pathName}_del, false),
                     editBtn: this.vaildData(this.permissions.${moduleName}_${pathName}_edit, false)
                 };
+            },
+            bindVal () {
+                return {
+                    ref: 'crud',
+                    option: this.option,
+                    data: this.data,
+                    tableLoading: this.loading
+                }
+            },
+            onEvent () {
+                return {
+                    'on-load': this.getList,
+                    'row-del': this.rowDel,
+                    'refresh-change': this.refreshChange,
+                    'search-reset': this.searchChange,
+                    'search-change': this.searchChange,
+                    'filter': this.filterChange,
+                    'sort-change': this.sortChange
+                }
             }
         },
         methods: {
-            getList(page, params) {
+            getList() {
                 this.tableLoading = true
-                fetchList(Object.assign({
+                const pageParams = {
                     current: page.currentPage,
                     size: page.pageSize
-                }, params, this.searchForm )).then(response => {
-                    this.tableData = response.data.data.records
-                    this.page.total = response.data.data.total
-                    this.tableLoading = false
+                }
+                let data = Object.assign(pageParams, this.params)
+                if(this.filterParams) {
+                    data = Object.assign(data, this.filterParams)
+                }
+                page(data).then(res => {
+                    this.loading = false;
+                    let result = res.data.data
+                    this.page.total = result['total'];
+                    this.data = result['records'];
                 }).catch(() => {
-                    this.tableLoading=false
+                    this.loading=false
+                })
+            },
+            addRow () {
+                this.addVisible = true
+                this.$nextTick(() => {
+                    this.$refs.addRef.init(this.addOption)
+                })
+            },
+            viewRow (row, ind) {
+                this.viewVisible = true
+                this.$nextTick(() => {
+                    this.$refs.viewRef.init(this.viewOption, row, ind)
+                })
+            },
+            editRow (row, ind) {
+                this.editVisible = true
+                this.$nextTick(() => {
+                    this.$refs.editRef.init(this.editOption, row, ind)
                 })
             },
             rowDel: function (row, index) {
@@ -89,26 +178,23 @@
                     return delObj(row.$pk.lowerAttrName)
                 }).then(data => {
                     this.$message.success('删除成功')
-                    this.getList(this.page)
+                    this.getList()
                 })
             },
-            handleUpdate: function (row, index, done,loading) {
-                putObj(row).then(data => {
-                    this.$message.success('修改成功')
-                    done()
-                    this.getList(this.page)
-                }).catch(() => {
-                    loading();
-                });
+            filterChange (result) {
+                console.log('filterChange', result)
+                this.filterParams = {}
+                for (let index = 0; index < result.length; index++) {
+                    const item = result[index];
+                    this.filterParams['$' + item[1] + ':' + item[0]] = item[2]
+                }
+                this.getList();
             },
-            handleSave: function (row, done,loading) {
-                addObj(row).then(data => {
-                    this.$message.success('添加成功')
-                    done()
-                    this.getList(this.page)
-                }).catch(() => {
-                    loading();
-                });
+            sortChange(val){
+                this.page.currentPage = 1;
+                this.page['sortField'] = val['prop']
+                this.page['sortOrder'] = val['order']
+                this.getList()
             },
             sizeChange(pageSize){
                 this.page.pageSize = pageSize
@@ -119,12 +205,14 @@
             searchChange(form, done) {
                 this.searchForm = form
                 this.page.currentPage = 1
-                this.getList(this.page, form)
+                this.getList()
                 done()
             },
             refreshChange() {
-                this.getList(this.page)
+                this.getList()
             }
         }
     }
 </script>
+<style lang="scss" scoped>
+</style>

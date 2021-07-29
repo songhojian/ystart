@@ -17,11 +17,22 @@
 
 import request from '@/router/axios'
 
-export function fetchList(query) {
+export function page(query) {
+  var params = { ...query, filter: query }
+  delete params['filter']['current']
+  delete params['filter']['size']
   return request({
     url: '/${moduleName}/${pathName}/page',
     method: 'get',
-    params: query
+    params: params
+  })
+}
+
+export function list (query,model) {
+  return request({
+    url: '/${moduleName}/${pathName}/list',
+    method: 'get',
+    params: { filter: query }
   })
 }
 

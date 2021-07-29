@@ -99,14 +99,14 @@ public class CommonServiceImpl implements CommonService {
                 }
                 for (int k = 0; k < relativesRefers.size(); k++) {
                     JSONObject objMapRef = relativesRefers.get(k);
-                    if (null != hashMapRecord.get(objMapRef.get("prop").toString())) {
+                    if (null != hashMapRecord.get(objMapRef.get("relObj").toString())) {
                         Query queryMaster = new Query();
-                        String objId = hashMapRecord.get(objMapRef.get("prop").toString()).toString();
+                        String objId = hashMapRecord.get(objMapRef.get("relObj").toString()).toString();
                         queryMaster.addCriteria(Criteria.where("_id").is(objId));
-                        HashMap refObj = mongoTemplate.findOne(queryMaster, HashMap.class, objMapRef.get("prop").toString());
-                        hashMapRecord.put(objMapRef.get("prop").toString() + "__REFOBJ", refObj);
+                        HashMap refObj = mongoTemplate.findOne(queryMaster, HashMap.class, objMapRef.get("relObj").toString());
+                        hashMapRecord.put(objMapRef.get("relObj").toString() + "__REFOBJ", refObj);
                     } else {
-                        hashMapRecord.put(objMapRef.get("prop").toString() + "__REFOBJ", new HashMap<>());
+                        hashMapRecord.put(objMapRef.get("relObj").toString() + "__REFOBJ", new HashMap<>());
                     }
                 }
             }
@@ -146,7 +146,10 @@ public class CommonServiceImpl implements CommonService {
             Map.Entry<String, Object> next = entryIterator.next();
             String key = next.getKey();
             Object value = next.getValue();
-            if (key.indexOf("____") != -1) { //"edu_exp____student"
+            if(key.endsWith("__REFOBJ")) {
+            	key = key.replace("__REFOBJ","");
+				insertMap.replace(key, value);
+			} else if (key.indexOf("____") != -1) { //"edu_exp____student"
                 // 关联对象信息
                 HashMap<String, Object> rel = new HashMap<>();
                 String[] temp = key.split("____");

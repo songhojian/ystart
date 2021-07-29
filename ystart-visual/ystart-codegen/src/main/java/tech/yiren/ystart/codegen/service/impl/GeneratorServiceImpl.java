@@ -30,14 +30,20 @@ import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import tech.yiren.ystart.codegen.entity.GenConfig;
 import tech.yiren.ystart.codegen.entity.GenFormConf;
+import tech.yiren.ystart.codegen.entity.Model;
 import tech.yiren.ystart.codegen.mapper.GenFormConfMapper;
 import tech.yiren.ystart.codegen.mapper.GeneratorMapper;
 import tech.yiren.ystart.codegen.service.GeneratorService;
 import tech.yiren.ystart.codegen.util.GenUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * @author ystart
@@ -50,6 +56,8 @@ import org.springframework.stereotype.Service;
 public class GeneratorServiceImpl implements GeneratorService {
 
 	private final GenFormConfMapper genFormConfMapper;
+	@Resource
+	private MongoTemplate mongoTemplate;
 
 	/**
 	 * 分页查询表
@@ -81,11 +89,14 @@ public class GeneratorServiceImpl implements GeneratorService {
 			// 查询列信息
 			List<Map<String, String>> columns = mapper.selectMapTableColumn(tableName, dsName);
 			// 生成代码
+			Query queryRelative1 = new Query();
+			queryRelative1.addCriteria(Criteria.where("code").is("meetingUp"));
+			Model model = mongoTemplate.findOne(queryRelative1,Model.class,"model");
 			if (CollUtil.isNotEmpty(formConfList)) {
-				return GenUtils.generatorCode(genConfig, table, columns, null, formConfList.get(0));
+				return GenUtils.generatorCode(genConfig, table, columns, null, formConfList.get(0),model);
 			}
 			else {
-				return GenUtils.generatorCode(genConfig, table, columns, null, null);
+				return GenUtils.generatorCode(genConfig, table, columns, null, null,model);
 			}
 		}
 		return MapUtil.empty();
@@ -115,15 +126,20 @@ public class GeneratorServiceImpl implements GeneratorService {
 			// 查询列信息
 			List<Map<String, String>> columns = mapper.selectMapTableColumn(tableName, dsName);
 			// 生成代码
+			Query queryRelative1 = new Query();
+			queryRelative1.addCriteria(Criteria.where("code").is("meetingUp"));
+			Model model = mongoTemplate.findOne(queryRelative1,Model.class,"model");
+
 			if (CollUtil.isNotEmpty(formConfList)) {
-				GenUtils.generatorCode(genConfig, table, columns, zip, formConfList.get(0));
-			}
-			else {
-				GenUtils.generatorCode(genConfig, table, columns, zip, null);
+				GenUtils.generatorCode(genConfig, table, columns, zip, formConfList.get(0), model);
+			} else {
+				GenUtils.generatorCode(genConfig, table, columns, zip, null, model);
 			}
 		}
 		IoUtil.close(zip);
 		return outputStream.toByteArray();
 	}
+
+
 
 }

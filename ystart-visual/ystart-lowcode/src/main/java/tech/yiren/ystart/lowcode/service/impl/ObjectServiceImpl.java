@@ -113,6 +113,7 @@ public class ObjectServiceImpl implements ObjectService {
         List<HashMap> relativSlots = new ArrayList<>();
         List<HashMap> relativesRefers = new ArrayList<>();
         String[] slotsRelativeTypes = new String[]{"attachment", "rich-text", "field-reference", "master-slave"};
+//		String[] slotsRelativeTypes = new String[]{"attachment", "rich-text"};
         for (int i = 0; i < relatives.size(); i++) {
             Relative relative = relatives.get(i);
             HashMap hashMap = this.conventViewJson(relative);
@@ -398,6 +399,8 @@ public class ObjectServiceImpl implements ObjectService {
             case "field-reference": // 字段引用
                 relativeField.put("type", "table");
                 relativeField.put("relObj", relative.getRelObj());
+                relativeField.replace("prop", relative.getFieldCode() + "__REFOBJ");
+                relativeField.put("bind", relative.getFieldCode() + "__REFOBJ");
 //                relativeField.put("children", );
 //                relativeField.put("props", JSON.parse("{\"label\":\"name\",\"value\":\"id\"}"));
 //                relativeField.put("onLoad", "eval(\"({ page, value, data }, callback) => {if(value){callback({id: '0', name: '张三', sex: '男'});return;} callback({total: 2,data: [{id: '0', name: '张三', sex: '男'}, {id: '1',name: '李四',sex: '女'}]})}\")");
