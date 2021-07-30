@@ -12,7 +12,12 @@ import tech.yiren.ystart.common.core.util.R;
 import tech.yiren.ystart.common.log.annotation.SysLog;
 import tech.yiren.ystart.lowcode.dto.FilterDto;
 import tech.yiren.ystart.lowcode.dto.PageDto;
+import tech.yiren.ystart.lowcode.entity.Model;
+import tech.yiren.ystart.lowcode.entity.Relative;
 import tech.yiren.ystart.lowcode.service.ObjectService;
+
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -157,4 +162,82 @@ public class ObjectController {
     public R saveObjConfig(@PathVariable String id, @RequestBody Object object) {
         return R.ok(objectService.updateById(id, object));
     }
+
+
+	@ApiOperation(value = "保存 object  对象", notes = "修改object 对象")
+	@SysLog("修改object 对象")
+	@GetMapping("/genSql/{code}")
+//    @PreAuthorize("@pms.hasPermission('object_object_edit')")
+	public R genSql(@PathVariable String code) {
+    	String strSql ="CREATE TABLE `"+code+"` (\n";
+
+		strSql += "`id` bigint(64) NOT NULL AUTO_INCREMENT COMMENT '自增ID',\n";
+
+		HashMap<String, Object> ret = (HashMap<String, Object>) objectService.getConfigByCode(code);
+		List<Relative> relatives = (List<Relative>) ret.get("relatives");
+		Model model = (Model) ret.get("model");
+		for (int i = 0; i < relatives.size(); i++) {
+			Relative relative = relatives.get(i);
+			if(relative.getFieldType().equals("input")) {
+				strSql += "`"+relative.getFieldCode()+"` varchar(255) COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("input-number-int")) {
+				strSql += "`"+relative.getFieldCode()+"` int(11) COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("input-number-double")) {
+				strSql += "`"+relative.getFieldCode()+"` DECIMAL(20,"+relative.getPrecision()+") COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("boolean")) {
+				strSql += "`"+relative.getFieldCode()+"` varchar(255) default 'true' COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("input-number-money")) {
+				strSql += "`"+relative.getFieldCode()+"` DECIMAL(20,"+relative.getPrecision()+") default 0 COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("input-number-percent")) {
+				strSql += "`"+relative.getFieldCode()+"` DECIMAL(10,2) default 0 COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("date")) {
+				strSql += "`"+relative.getFieldCode()+"` datetime COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("datetime")) {
+				strSql += "`"+relative.getFieldCode()+"` datetime COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("select")) {
+				strSql += "`"+relative.getFieldCode()+"` varchar(255) COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("select-multiple")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("tree")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("tree-multiple")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("url")) {
+				strSql += "`"+relative.getFieldCode()+"` varchar(255) COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("email")) {
+				strSql += "`"+relative.getFieldCode()+"` varchar(255) COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("telephone")) {
+				strSql += "`"+relative.getFieldCode()+"` varchar(255) COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("mobile")) {
+				strSql += "`"+relative.getFieldCode()+"` varchar(255) COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("country-region")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("address")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("tag")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("summary")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("auto-number")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("attachment")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("formula")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("image")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("rich-text")) {
+				strSql += "`"+relative.getFieldCode()+"` TEXT COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("map")) {
+				strSql += "`"+relative.getFieldCode()+"` json COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("field-reference")) {
+				strSql += "`"+relative.getFieldCode()+"` bigint(64) COMMENT '"+relative.getFieldName()+"',\n";
+			}else if(relative.getFieldType().equals("master-slave")) {
+				strSql += "`"+relative.getFieldCode()+"` bigint(64) COMMENT '"+relative.getFieldName()+"',\n";
+			}
+		}
+		strSql += "PRIMARY KEY (`id`) USING BTREE\n";
+		strSql += ") ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='"+model.getName()+"';\n";
+		return R.ok(strSql);
+	}
 }

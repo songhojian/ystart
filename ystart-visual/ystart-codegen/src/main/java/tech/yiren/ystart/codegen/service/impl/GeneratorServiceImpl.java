@@ -90,7 +90,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 			List<Map<String, String>> columns = mapper.selectMapTableColumn(tableName, dsName);
 			// 生成代码
 			Query queryRelative1 = new Query();
-			queryRelative1.addCriteria(Criteria.where("code").is("meetingUp"));
+			queryRelative1.addCriteria(Criteria.where("code").is(genConfig.getTableName()));
 			Model model = mongoTemplate.findOne(queryRelative1,Model.class,"model");
 			if (CollUtil.isNotEmpty(formConfList)) {
 				return GenUtils.generatorCode(genConfig, table, columns, null, formConfList.get(0),model);
@@ -127,7 +127,7 @@ public class GeneratorServiceImpl implements GeneratorService {
 			List<Map<String, String>> columns = mapper.selectMapTableColumn(tableName, dsName);
 			// 生成代码
 			Query queryRelative1 = new Query();
-			queryRelative1.addCriteria(Criteria.where("code").is("meetingUp"));
+			queryRelative1.addCriteria(Criteria.where("code").is(genConfig.getTableName()));
 			Model model = mongoTemplate.findOne(queryRelative1,Model.class,"model");
 
 			if (CollUtil.isNotEmpty(formConfList)) {
@@ -139,7 +139,5 @@ public class GeneratorServiceImpl implements GeneratorService {
 		IoUtil.close(zip);
 		return outputStream.toByteArray();
 	}
-
-
 
 }

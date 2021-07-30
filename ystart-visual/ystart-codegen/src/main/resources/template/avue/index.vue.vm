@@ -137,20 +137,23 @@
             },
             addRow () {
                 this.addVisible = true
+                var option = this.addOption1;
                 this.$nextTick(() => {
-                    this.$refs.addRef.init(this.addOption)
+                     this.$refs.addRef.init(option);
                 })
             },
             viewRow (row, ind) {
                 this.viewVisible = true
+                var option = this.viewOption;
                 this.$nextTick(() => {
-                    this.$refs.viewRef.init(this.viewOption, row, ind)
+                    this.$refs.viewRef.init(option, row, ind)
                 })
             },
             editRow (row, ind) {
                 this.editVisible = true
+                var option = this.editOption;
                 this.$nextTick(() => {
-                    this.$refs.editRef.init(this.editOption, row, ind)
+                     this.$refs.editRef.init(option, row, ind)
                 })
             },
             rowDel: function (row, index) {
