@@ -76,7 +76,7 @@ public class CommonController {
      * @return {@link R}
      */
     @ApiOperation(value = "列表查询", notes = "列表查询")
-    @GetMapping("/{model}//list")
+    @GetMapping("/{model}/list")
 //    @PreAuthorize("@pms.hasPermission('object_object_list')")
     public R getList(@PathVariable("model") String model, FilterDto filterDto) {
         return R.ok(commonService.list(model,filterDto));
